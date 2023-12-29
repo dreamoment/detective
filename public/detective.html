@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style>
+        #detective {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            padding: 1vw;
+            box-sizing: border-box;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #242424;
+        }
+
+        .section {
+            width: 30vw;
+            padding: 1vw;
+            box-sizing: border-box;
+        }
+
+        .title {
+            color: #aaaaaa;
+            font-size: 2vw;
+        }
+
+        .sub-section {
+            flex-basis: 45%;
+            border: 1px solid #444444;
+            border-radius: 0.2vw;
+            margin: 1vw 0;
+            color: #ffffff;
+            background: #333333;
+            box-shadow: 0 0 0.5vw #222222;
+        }
+
+        .sub-section:hover {
+            border: 1px solid #333333;
+            background: #222222;
+            transform: translateY(-0.2vw);
+            cursor: pointer;
+        }
+
+        .sub-title {
+            padding: 1vw;
+            font-size: 1vw;
+        }
+
+        .content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .sub-content {
+            padding: 1vw;
+            float: right;
+            font-size: 2vw;
+        }
+
+        .extension {
+
+        }
+
+        .warning {
+            color: #da1f2a;
+        }
+    </style>
+</head>
+<body>
+    <div id="detective">
+        <div class="section">
+            <div class="title">Assets</div>
+            <div class="content">
+                <div class="sub-section">
+                    <div class="sub-title">Renderer</div>
+                    <div id="renderer" class="sub-content">null</div>
+                </div>
+                <div class="sub-section">
+                    <div class="sub-title">Scene</div>
+                    <div id="scene" class="sub-content">null</div>
+                </div>
+                <div class="sub-section">
+                    <div class="sub-title">Light</div>
+                    <div id="light" class="sub-content">null</div>
+                </div>
+                <div class="sub-section">
+                    <div class="sub-title">Mesh</div>
+                    <div id="mesh" class="sub-content">null</div>
+                </div>
+                <div class="sub-section">
+                    <div class="sub-title">Material</div>
+                    <div id="material" class="sub-content">null</div>
+                </div>
+                <div class="sub-section">
+                    <div class="sub-title">Shader</div>
+                    <div id="shader" class="sub-content">null</div>
+                </div>
+                <div class="sub-section">
+                    <div class="sub-title">Geometry</div>
+                    <div id="geometry" class="sub-content">null</div>
+                </div>
+                <div class="sub-section">
+                    <div class="sub-title">Texture</div>
+                    <div id="texture" class="sub-content">null</div>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="title">Memory</div>
+            <div class="content">
+                <div class="sub-section">
+                    <div class="sub-title">used</div>
+                    <div id="used" class="sub-content">null</div>
+                </div>
+                <div class="sub-section">
+                    <div class="sub-title">limit</div>
+                    <div id="limit" class="sub-content">null</div>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="title">Render</div>
+            <div class="content">
+                <div class="sub-section">
+                    <div class="sub-title">FPS</div>
+                    <div id="fps" class="sub-content">null</div>
+                </div>
+                <div class="sub-section">
+                    <div class="sub-title">Draw Call</div>
+                    <div id="drawcall" class="sub-content">null</div>
+                </div>
+                <div class="sub-section">
+                    <div class="sub-title">Triangle</div>
+                    <div id="triangle" class="sub-content">null</div>
+                </div>
+                <div class="sub-section">
+                    <div class="sub-title">Point</div>
+                    <div id="point" class="sub-content">null</div>
+                </div>
+                <div class="sub-section">
+                    <div class="sub-title">Line</div>
+                    <div id="line" class="sub-content">null</div>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="title">Extensions</div>
+            <div id="extensions" class="content"></div>
+        </div>
+    </div>
+    <script>
+        const filterString = value => {
+            return value.toString().substring(0, 4)
+        }
+
+        const channel = new BroadcastChannel('detective')
+        channel.addEventListener('message', (event) => {
+            const data = JSON.parse(event.data)
+
+            document.querySelector('#renderer').innerText = filterString(data.asset.renderer)
+            document.querySelector('#scene').innerText = filterString(data.asset.scene)
+            document.querySelector('#light').innerText = filterString(data.asset.light)
+            document.querySelector('#mesh').innerText = filterString(data.asset.mesh)
+            document.querySelector('#material').innerText = filterString(data.asset.material)
+            document.querySelector('#shader').innerText = filterString(data.asset.shader)
+
+            document.querySelector('#used').innerText = filterString(data.memory.used)
+            document.querySelector('#limit').innerText = filterString(data.memory.limit)
+            document.querySelector('#geometry').innerText = filterString(data.memory.geometries)
+            document.querySelector('#texture').innerText = filterString(data.memory.textures)
+            document.querySelector('#fps').innerText = filterString(data.render.fps)
+            document.querySelector('#drawcall').innerText = filterString(data.render.calls)
+            document.querySelector('#triangle').innerText = filterString(data.render.triangles)
+            document.querySelector('#point').innerText = filterString(data.render.points)
+            document.querySelector('#line').innerText = filterString(data.render.lines)
+
+
+            const extensions = document.querySelector('#extensions')
+            extensions.innerHTML = ''
+            for (const key in data.extensions) {
+                const value = data.extensions[key]
+                const row = document.createElement('div')
+                const _key = document.createElement('div')
+                const _value = document.createElement('div')
+                row.classList.add('sub-section')
+                _key.classList.add('sub-title')
+                _value.classList.add('sub-content')
+                _key.innerText = key
+                _value.innerText = filterString(value)
+                row.appendChild(_key)
+                row.appendChild(_value)
+                extensions.appendChild(row)
+            }
+        })
+    </script>
+</body>
+</html>
