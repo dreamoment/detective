@@ -26,6 +26,8 @@ Language: English | [中文简体](README_zh_cn.md)
 npm i @dreamoment/detective
 ```
 
+> In the directory corresponding to the port, deploy [detective.html](https://github.com/dreamoment/detective/releases). Open `[your domain]/detective.html` to access the monitor panel.
+
 ## Examples
 
 ```

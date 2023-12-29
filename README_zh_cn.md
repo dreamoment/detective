@@ -26,6 +26,8 @@
 npm i @dreamoment/detective
 ```
 
+> 在端口对应的目录上，部署 [detective.html](https://github.com/dreamoment/detective/releases)。打开`[your domain]/detective.html`以访问监控面板。
+
 ## 示例
 
 ```
