@@ -34,7 +34,6 @@ class Detective {
 
     time: number = 0
     frame: number = 0
-    fps: number = 0
     extensions: Map<ExtensionRef> = {}
     renderer: THREE.WebGLRenderer
     channel: BroadcastChannel
@@ -45,17 +44,18 @@ class Detective {
     }
 
     update() {
-        const info = this.renderer.info
+        const info: any = this.renderer.info
         const time: number = (performance || Date).now()
 
         if (this.time > 0) {
-            this.fps = (info.render.frame - this.frame) / (time - this.time) * 1000
+            info.render.fps = (info.render.frame - this.frame) / (time - this.time) * 1000
         }
-        info.render.fps = this.fps
 
-        const memory = performance.memory
-        info.memory.used = memory.usedJSHeapSize
-        info.memory.total = memory.jsHeapSizeLimit
+        if (performance) {
+            const memory = (performance as any).memory
+            info.memory.used = memory.usedJSHeapSize
+            info.memory.total = memory.jsHeapSizeLimit
+        }
 
         const lights = []
         const meshes = []

@@ -166,12 +166,18 @@
             document.querySelector('#material').innerText = parseInt(data.asset.material)
             document.querySelector('#shader').innerText = parseInt(data.asset.shader)
 
-            document.querySelector('#used').innerText = `${parseInt(data.memory.used / 1048576)}MB`
-            document.querySelector('#total').innerText = `${parseInt(data.memory.total / 1048576)}MB`
+            if (data.memory.used) {
+                document.querySelector('#used').innerText = `${parseInt(data.memory.used / 1048576)}MB`
+            }
+            if (data.memory.total) {
+                document.querySelector('#total').innerText = `${parseInt(data.memory.total / 1048576)}MB`
+            }
 
             document.querySelector('#geometry').innerText = parseInt(data.memory.geometries)
             document.querySelector('#texture').innerText = parseInt(data.memory.textures)
-            document.querySelector('#fps').innerText = parseInt(data.render.fps)
+            if (data.render.fps) {
+                document.querySelector('#fps').innerText = parseInt(data.render.fps)
+            }
             document.querySelector('#drawcall').innerText = parseInt(data.render.calls)
             document.querySelector('#triangle').innerText = parseInt(data.render.triangles)
             document.querySelector('#point').innerText = parseInt(data.render.points)
