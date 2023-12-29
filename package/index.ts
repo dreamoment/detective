@@ -1,5 +1,4 @@
 import * as THREE from 'three'
-import '../public/index.css'
 
 
 interface Map<T> {
@@ -31,7 +30,8 @@ window.__THREE_DEVTOOLS__ = {
 
 class Detective {
 
-    beginTime: number
+    time: number = 0
+    frame: number = 0
     fps: number = 0
     extensions: Map<ExtensionRef> = {}
     renderer: THREE.WebGLRenderer
@@ -39,19 +39,21 @@ class Detective {
 
     constructor(renderer: THREE.WebGLRenderer) {
         this.renderer = renderer
-        this.beginTime = (performance || Date).now()
         this.channel = new BroadcastChannel('detective')
     }
 
     update() {
         const info = this.renderer.info
         const time: number = (performance || Date).now()
-        this.fps = (info.render.frame * 1000) / (time - this.beginTime)
+
+        if (this.time > 0) {
+            this.fps = (info.render.frame - this.frame) / (time - this.time) * 1000
+        }
+        info.render.fps = this.fps
 
         const memory = performance.memory
-        info.memory.used = memory.usedJSHeapSize / 1048576
-        info.memory.limit = memory.jsHeapSizeLimit / 1048576
-        info.render.fps = 0
+        info.memory.used = memory.usedJSHeapSize
+        info.memory.total = memory.jsHeapSizeLimit
 
         const lights = []
         const meshes = []
@@ -90,12 +92,10 @@ class Detective {
             info.extensions[name] = this.extensions[name]['ref'][prop]
         }
 
-        console.log(info)
-
+        this.time = time
+        this.frame = info.render.frame
 
         this.channel.postMessage(JSON.stringify(info))
-
-        this.beginTime = time
     }
 
     ref(ref: any, prop: string) {

@@ -60,12 +60,12 @@ scene.add(cube, cube1)
 const detective = new Detective(renderer)
 
 // extend the custom prop
-// const extensionRef1 = detective.ref(camera.position, 'x')
-// const extensionRef2 = detective.ref(camera.position, 'y')
-// const extensionRef3 = detective.ref(camera.position, 'z')
-// detective.extend('CameraPosX', extensionRef1)
-// detective.extend('CameraPosY', extensionRef2)
-// detective.extend('CameraPosZ', extensionRef3)
+const extensionRef1 = detective.ref(camera.position, 'x')
+const extensionRef2 = detective.ref(camera.position, 'y')
+const extensionRef3 = detective.ref(camera.position, 'z')
+detective.extend('CameraPosX', extensionRef1)
+detective.extend('CameraPosY', extensionRef2)
+detective.extend('CameraPosZ', extensionRef3)
 
 const animate = () => {
   controls.update()

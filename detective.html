@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>detective</title>
 
     <style>
         #detective {
             display: flex;
+            justify-content: space-between;
             width: 100vw;
             height: 100vh;
             padding: 1vw;
@@ -18,7 +19,7 @@
         }
 
         .section {
-            width: 30vw;
+            flex-basis: 30%;
             padding: 1vw;
             box-sizing: border-box;
         }
@@ -60,10 +61,6 @@
             padding: 1vw;
             float: right;
             font-size: 2vw;
-        }
-
-        .extension {
-
         }
 
         .warning {
@@ -118,8 +115,8 @@
                     <div id="used" class="sub-content">null</div>
                 </div>
                 <div class="sub-section">
-                    <div class="sub-title">limit</div>
-                    <div id="limit" class="sub-content">null</div>
+                    <div class="sub-title">total</div>
+                    <div id="total" class="sub-content">null</div>
                 </div>
             </div>
         </div>
@@ -148,53 +145,59 @@
                 </div>
             </div>
         </div>
-        <div class="section">
+        <div id="section-extensions" class="section">
             <div class="title">Extensions</div>
             <div id="extensions" class="content"></div>
         </div>
     </div>
     <script>
         const filterString = value => {
-            return value.toString().substring(0, 4)
+            return value.toString().substring(0, 8)
         }
 
         const channel = new BroadcastChannel('detective')
         channel.addEventListener('message', (event) => {
             const data = JSON.parse(event.data)
 
-            document.querySelector('#renderer').innerText = filterString(data.asset.renderer)
-            document.querySelector('#scene').innerText = filterString(data.asset.scene)
-            document.querySelector('#light').innerText = filterString(data.asset.light)
-            document.querySelector('#mesh').innerText = filterString(data.asset.mesh)
-            document.querySelector('#material').innerText = filterString(data.asset.material)
-            document.querySelector('#shader').innerText = filterString(data.asset.shader)
+            document.querySelector('#renderer').innerText = parseInt(data.asset.renderer)
+            document.querySelector('#scene').innerText = parseInt(data.asset.scene)
+            document.querySelector('#light').innerText = parseInt(data.asset.light)
+            document.querySelector('#mesh').innerText = parseInt(data.asset.mesh)
+            document.querySelector('#material').innerText = parseInt(data.asset.material)
+            document.querySelector('#shader').innerText = parseInt(data.asset.shader)
 
-            document.querySelector('#used').innerText = filterString(data.memory.used)
-            document.querySelector('#limit').innerText = filterString(data.memory.limit)
-            document.querySelector('#geometry').innerText = filterString(data.memory.geometries)
-            document.querySelector('#texture').innerText = filterString(data.memory.textures)
-            document.querySelector('#fps').innerText = filterString(data.render.fps)
-            document.querySelector('#drawcall').innerText = filterString(data.render.calls)
-            document.querySelector('#triangle').innerText = filterString(data.render.triangles)
-            document.querySelector('#point').innerText = filterString(data.render.points)
-            document.querySelector('#line').innerText = filterString(data.render.lines)
+            document.querySelector('#used').innerText = `${parseInt(data.memory.used / 1048576)}MB`
+            document.querySelector('#total').innerText = `${parseInt(data.memory.total / 1048576)}MB`
+
+            document.querySelector('#geometry').innerText = parseInt(data.memory.geometries)
+            document.querySelector('#texture').innerText = parseInt(data.memory.textures)
+            document.querySelector('#fps').innerText = parseInt(data.render.fps)
+            document.querySelector('#drawcall').innerText = parseInt(data.render.calls)
+            document.querySelector('#triangle').innerText = parseInt(data.render.triangles)
+            document.querySelector('#point').innerText = parseInt(data.render.points)
+            document.querySelector('#line').innerText = parseInt(data.render.lines)
 
 
-            const extensions = document.querySelector('#extensions')
-            extensions.innerHTML = ''
-            for (const key in data.extensions) {
-                const value = data.extensions[key]
-                const row = document.createElement('div')
-                const _key = document.createElement('div')
-                const _value = document.createElement('div')
-                row.classList.add('sub-section')
-                _key.classList.add('sub-title')
-                _value.classList.add('sub-content')
-                _key.innerText = key
-                _value.innerText = filterString(value)
-                row.appendChild(_key)
-                row.appendChild(_value)
-                extensions.appendChild(row)
+            if (Object.keys(data.extensions).length > 0) {
+                const extensions = document.querySelector('#extensions')
+                extensions.innerHTML = ''
+                for (const key in data.extensions) {
+                    const value = data.extensions[key]
+                    const row = document.createElement('div')
+                    const _key = document.createElement('div')
+                    const _value = document.createElement('div')
+                    row.classList.add('sub-section')
+                    _key.classList.add('sub-title')
+                    _value.classList.add('sub-content')
+                    _key.innerText = key
+                    _value.innerText = filterString(value)
+                    row.appendChild(_key)
+                    row.appendChild(_value)
+                    extensions.appendChild(row)
+                }
+            }
+            else {
+                document.querySelector('#section-extensions').style.display = 'none'
             }
         })
     </script>
