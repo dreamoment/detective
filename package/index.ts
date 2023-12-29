@@ -11,17 +11,19 @@ interface ExtensionRef {
 }
 
 
-const scenes = []
-const renderers = []
+const scenes: THREE.Scene[] = []
+const renderers: THREE.WebGLRenderer[] = []
 
-window.__THREE_DEVTOOLS__ = {
-    dispatchEvent(event) {
-        if (event.type === 'observe') {
-            if (event.detail instanceof THREE.Scene) {
-                scenes.push(event.detail)
-            }
-            else if (event.detail instanceof THREE.WebGLRenderer) {
-                renderers.push(event.detail)
+{
+    (window as any).__THREE_DEVTOOLS__ = {
+        dispatchEvent: (event: any) => {
+            if (event.type === 'observe') {
+                if (event.detail instanceof THREE.Scene) {
+                    scenes.push(event.detail)
+                }
+                else if (event.detail instanceof THREE.WebGLRenderer) {
+                    renderers.push(event.detail)
+                }
             }
         }
     }
