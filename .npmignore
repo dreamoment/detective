@@ -3,6 +3,7 @@ public
 src
 
 .idea
+.gitattributes
 .gitignore
 .npmignore
 index.html
